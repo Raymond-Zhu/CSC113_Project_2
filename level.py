@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-from sprites import Brick, Platform, Cloud
+from sprites import *
 
 class Level():
     def __init__(self):
@@ -24,8 +24,25 @@ class Level():
                     self.sprites.add(brick)
                 if col == "P":
                     platform = Platform(x,y)
-                    self.world.append(Platform)
+                    self.world.append(platform)
                     self.sprites.add(platform)
+                if col == "U":
+                    bush = Bush(x,y)
+                    self.world.append(bush)
+                    self.sprites.add(bush)
+                if col == "G":
+                    pipe = Pipe(x,y)
+                    self.world.append(pipe)
+                    self.sprites.add(pipe)
+                if col == "D":
+                    dcloud = DobbelCloud(x,y)
+                    self.world.append(dcloud)
+                    self.sprites.add(dcloud)
+                if col == "M":
+                    mario = Mario(x,y)
+                    self.mario = mario
+                    self.world.append(mario)
+                    self.sprites.add(mario)
                 x += 16
             y += 16
             x = 0
