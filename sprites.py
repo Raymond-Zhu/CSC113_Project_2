@@ -1,3 +1,4 @@
+import pygame
 from pygame.locals import *
 
 class Brick(pygame.sprite.Sprite):
