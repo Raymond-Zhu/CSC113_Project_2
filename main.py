@@ -1,5 +1,6 @@
 import pygame, sys
 from pygame.locals import *
+from level import Level
 
 pygame.init()
 SCREEN_SIZE = (640,480)
@@ -18,6 +19,9 @@ while True:
     for x in range(0,screen_rect.w,bg_rect.w):
         for y in range(0,screen_rect.h,bg_rect.h):
             screen.blit(bg,(x,y))
+    level = Level()
+    level.create(0,0)
+    level.draw(screen)
 
     pygame.display.flip()
 
