@@ -19,8 +19,11 @@ while True:
         level.mario.image = pygame.image.load("data/mariodie.png").convert_alpha()
         level.mario.death()
         if level.mario.rect.y > screen.get_height():
-            pygame.quit()
-            sys.exit()
+            level.game_over = True
+            for event in pygame.event.get():
+                if event.type == KEYDOWN and event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
     else:
         #Blits background according to screen size
         for event in pygame.event.get():

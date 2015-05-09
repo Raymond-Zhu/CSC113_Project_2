@@ -8,7 +8,8 @@ class Level():
         self.tilemap = open("data/level","r")
         self.world = []
         self.collidable = pygame.sprite.Group()
-
+        self.game_over = False
+        self.font = pygame.font.Font("data/font.ttf",24)
     def create(self,x,y):
         for tile in self.tilemap:
             self.level.append(tile)
@@ -42,12 +43,14 @@ class Level():
             y += 16
             x = 0
     def draw(self,surface):
-        color = (0,128,255)
-        for s in self.world:
-           # pygame.draw.rect(surface,color,s.rect)
-            surface.blit(s.image,s.rect.topleft)
-        surface.blit(self.mario.image,self.mario.rect)
-       # pygame.draw.rect(surface,color,self.mario.rect)
+        if self.game_over:
+            surface.fill((0,0,0))
+            text = self.font.render("GAME OVER",1,(255,255,255))
+            surface.blit(text, (200,240))
+        else:
+            for s in self.world:
+                surface.blit(s.image,s.rect.topleft)
+            surface.blit(self.mario.image,self.mario.rect)
 
 
 
