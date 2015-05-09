@@ -23,13 +23,14 @@ while True:
             sys.exit()
         if event.type == KEYDOWN and event.key == K_RIGHT:
             right = True
-            level.mario.dx = 5
+            level.mario.dx = 3
         if event.type == KEYDOWN and event.key == K_LEFT:
             left = True
-            level.mario.dx = -5
+            level.mario.dx = -3
         if event.type == KEYDOWN and event.key == K_UP:
             if level.mario.on_ground:
                 up = True
+                level.mario.jumping = True
                 level.mario.dy = level.mario.jump_speed
                 level.mario.on_ground = False
 
@@ -41,7 +42,7 @@ while True:
             left = False
         if event.type == KEYUP and event.key == K_UP:
             if level.mario.on_ground:
-                level.mario.jump_speed = -16
+                level.mario.jump_speed = -5
             level.mario.jumping = False
             up = False
     for x in range(0,screen_rect.w,bg_rect.w):
@@ -52,4 +53,4 @@ while True:
         #pygame.draw.rect(screen,(255,255,255),s.rect)
     level.mario.update(screen,left,right,up,level.collidable)
     pygame.display.flip()
-    clock.tick(10)
+    clock.tick(30)
