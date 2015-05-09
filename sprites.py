@@ -70,10 +70,13 @@ class Mario(pygame.sprite.Sprite):
         self.frame = 0
         self.on_ground = True
         self.jumping = False
-        self.jump_speed = -5
+        self.jump_speed = -8
         self.gravity = .45
         self.face = "right"
         self.dead = False
+        self.jump_sound = pygame.mixer.Sound('data/sound/jump.ogg')
+        self.collide_sound = pygame.mixer.Sound('data/sound/jump2.ogg')
+        self.play_jump = False
     def update(self,screen,left,right,up,sprites):
         if self.rect.top >= screen.get_height():
             self.dead = True
@@ -98,6 +101,10 @@ class Mario(pygame.sprite.Sprite):
             self.image = pygame.image.load(self.left_images[self.frame//4]).convert_alpha()
             self.collide(sprites,left)
         if up:
+            if self.play_jump:
+                self.jump_sound.stop()
+                self.jump_sound.play()
+                self.play_jump = False
             if self.face == "left" and not self.on_ground:
                 self.image = pygame.image.load("data/mario5-left.png").convert_alpha()
             elif self.face == "right" and not self.on_ground:
@@ -115,15 +122,13 @@ class Mario(pygame.sprite.Sprite):
             self.dy += self.gravity
             self.rect.y += self.dy
             self.collide(sprites,left)
-        #self.x = self.rect.x #Not even sure why I still have these values. Just gonna leave it there just in case
-        #self.y = self.rect.y
         if self.rect.left < 0:
             self.rect.left = 0
         if self.rect.right > screen.get_width():
             self.rect.right = screen.get_width()
     def death(self):
         self.rect.y += self.dy
-        self.dy += self.gravity
+        self.dy += self.gravity/2
     def collide(self,sprites,left):
         for s in sprites:
             if self.rect.colliderect(s):
@@ -140,6 +145,9 @@ class Mario(pygame.sprite.Sprite):
                     self.rect.left = s.rect.right
                     self.dx = 0
                 elif self.dy < 0:
+                    self.play_jump = False
+                    self.jump_sound.stop()
+                    self.collide_sound.play()
                     self.rect.top = s.rect.bottom
                     self.dy = 0
                 elif self.dy > 0:

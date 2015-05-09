@@ -7,16 +7,25 @@ pygame.init()
 SCREEN_SIZE = (640,480)
 screen = pygame.display.set_mode(SCREEN_SIZE)
 bg = pygame.image.load("data/background-2.png").convert()
-#Rects are used for calculating how many times we need to blit background
 bg_rect = bg.get_rect()
 level = Level()
 level.create(0,0)
 pygame.mouse.set_visible(0)
 up=left=right=False
+pygame.mixer.init()
+bg_music = pygame.mixer.Sound('data/sound/maintheme.ogg')
+play_die_music = True
+bg_music.play(-1)
 
 while True:
     if level.mario.dead:
         level.mario.image = pygame.image.load("data/mariodie.png").convert_alpha()
+        if play_die_music:
+            bg_music.stop()
+            pygame.mixer.music.load('data/sound/death.ogg')
+            pygame.mixer.music.queue('data/sound/gameover.ogg') #Queue seems to not work. Not sure why.
+            pygame.mixer.music.play()
+            play_die_music = False
         level.mario.death()
         if level.mario.rect.y > screen.get_height():
             level.game_over = True
@@ -40,6 +49,7 @@ while True:
                     level.mario.jumping = True
                     level.mario.dy = level.mario.jump_speed
                     level.mario.on_ground = False
+                    level.mario.play_jump = True
 
             if event.type == KEYUP and event.key == K_RIGHT:
                 level.mario.image = pygame.image.load("data/mario1.png").convert_alpha()
