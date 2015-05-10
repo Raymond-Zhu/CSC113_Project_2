@@ -7,6 +7,7 @@ class Level():
         self.level = []
         self.tilemap = open("data/level","r")
         self.world = []
+        self.enemies = pygame.sprite.Group()
         self.collidable = pygame.sprite.Group()
         self.game_over = False
         self.font = pygame.font.Font("data/font.ttf",24)
@@ -29,26 +30,35 @@ class Level():
                 if col == "U":
                     bush = Bush(x,y)
                     self.world.append(bush)
-                if col == "G":
+                if col == "I":
                     pipe = Pipe(x,y)
                     self.world.append(pipe)
                     self.collidable.add(pipe)
                 if col == "D":
                     dcloud = DobbelCloud(x,y)
                     self.world.append(dcloud)
+                if col == "G":
+                    goomba = Goomba(x,y)
+                    self.world.append(goomba)
+                    self.enemies.add(goomba)
                 if col == "M":
                     mario = Mario(x,y)
                     self.mario = mario
                 x += 16
             y += 16
             x = 0
-    def draw(self,surface):
+    def update(self,surface):
         if self.game_over:
             surface.fill((0,0,0))
             text = self.font.render("GAME OVER",1,(255,255,255))
             surface.blit(text, (200,240))
         else:
-            for s in self.world:
+            for enemy in self.enemies:
+                enemy.update()
+                surface.blit(enemy.image,enemy.rect.topleft)
+                if enemy.dead and enemy.squish_frame == 5:
+                    self.enemies.remove(enemy)
+            for s in self.collidable:
                 surface.blit(s.image,s.rect.topleft)
             surface.blit(self.mario.image,self.mario.rect)
 

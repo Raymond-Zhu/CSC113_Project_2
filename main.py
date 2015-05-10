@@ -59,13 +59,13 @@ while True:
                 left = False
             if event.type == KEYUP and event.key == K_UP:
                 if level.mario.on_ground:
-                    level.mario.jump_speed = -5
+                    level.mario.jump_speed = -8
                 level.mario.jumping = False
                 up = False
-        level.mario.update(screen,left,right,up,level.collidable)
+        level.mario.update(screen,left,right,up,level.collidable,level.enemies)
     for x in range(0,screen.get_width(),bg_rect.w):
         for y in range(0,screen.get_height(),bg_rect.h):
             screen.blit(bg,(x,y))
-    level.draw(screen)
+    level.update(screen)
     pygame.display.flip()
     clock.tick(30)

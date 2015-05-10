@@ -50,6 +50,41 @@ class Pipe(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.rect = self.image.get_rect()
         self.rect.topleft = [self.x,self.y]
+class Goomba(pygame.sprite.Sprite):
+    def __init__(self,x,y):
+        self.max_x = x + 48
+        self.min_x = x - 48
+        self.left = False
+        self.image = pygame.image.load("data/slub1.png").convert_alpha()
+        self.animate = ['data/slub1.png','data/slub2.png']
+        self.rect = self.image.get_rect()
+        self.rect.topleft = [x,y]
+        self.rect.w -= 2
+        self.rect.h -= 2
+        pygame.sprite.Sprite.__init__(self)
+        self.frame = 0
+        self.squish_frame = 0
+        self.dead = False
+    def update(self):
+        if self.dead:
+            self.image = pygame.image.load('data/slub3.png').convert_alpha()
+            self.rect.y = self.rect.y - 8
+            self.squish_frame += 1
+        else:
+            self.frame += 1
+            if self.frame > 9:
+                self.frame = 0
+            if self.left:
+                self.rect.x -= 4
+                if self.rect.x < self.min_x:
+                    self.rect.x = self.min_x
+                    self.left = False
+            else:
+                self.rect.x += 4
+                if self.rect.x > self.max_x:
+                    self.rect.x = self.max_x
+                    self.left = True
+            self.image = pygame.image.load(self.animate[self.frame//5]).convert_alpha()
 
 class Mario(pygame.sprite.Sprite):
     def __init__(self,x,y):
@@ -61,7 +96,7 @@ class Mario(pygame.sprite.Sprite):
         self.image = pygame.image.load("data/mario1.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.topleft = [self.x,self.y]
-        self.rect.w -= 2
+        self.rect.w -= 2 #Hitbox needs to be smaller or collison acts weird
         self.rect.h -= 2
         self.left_images = ["data/mario1-left.png","data/mario2-left.png",
                             "data/mario3-left.png","data/mario4-left.png"]
@@ -71,13 +106,14 @@ class Mario(pygame.sprite.Sprite):
         self.on_ground = True
         self.jumping = False
         self.jump_speed = -8
-        self.gravity = .45
+        self.gravity = .48
         self.face = "right"
         self.dead = False
         self.jump_sound = pygame.mixer.Sound('data/sound/jump.ogg')
         self.collide_sound = pygame.mixer.Sound('data/sound/jump2.ogg')
+        self.stomp_sound = pygame.mixer.Sound('data/sound/stomp.ogg')
         self.play_jump = False
-    def update(self,screen,left,right,up,sprites):
+    def update(self,screen,left,right,up,sprites,enemies):
         if self.rect.top >= screen.get_height():
             self.dead = True
             self.dy = -8
@@ -85,21 +121,21 @@ class Mario(pygame.sprite.Sprite):
         if right :
             self.dx = 3
             self.face = "right"
-            self.rect.x += self.dx
             self.frame += 1
+            self.rect.x += self.dx
             if self.frame == 16:
                 self.frame = 0
             self.image = pygame.image.load(self.right_images[self.frame//4]).convert_alpha()
-            self.collide(sprites,left)
+            self.collide(sprites,enemies)
         if left:
             self.dx = -3
             self.face = "left"
-            self.rect.x += self.dx
             self.frame += 1
+            self.rect.x += self.dx
             if self.frame == 16:
                 self.frame = 0
             self.image = pygame.image.load(self.left_images[self.frame//4]).convert_alpha()
-            self.collide(sprites,left)
+            self.collide(sprites,enemies)
         if up:
             if self.play_jump:
                 self.jump_sound.stop()
@@ -114,14 +150,15 @@ class Mario(pygame.sprite.Sprite):
             if self.dy >= 16:
                 self.dy = 0
                 self.jumping = False
-            self.collide(sprites,left)
+            self.collide(sprites,enemies)
+
         if not (left or right):
             self.dx = 0
             self.frame = 0
         if not self.jumping:
             self.dy += self.gravity
             self.rect.y += self.dy
-            self.collide(sprites,left)
+            self.collide(sprites,enemies)
         if self.rect.left < 0:
             self.rect.left = 0
         if self.rect.right > screen.get_width():
@@ -129,7 +166,8 @@ class Mario(pygame.sprite.Sprite):
     def death(self):
         self.rect.y += self.dy
         self.dy += self.gravity/2
-    def collide(self,sprites,left):
+    def collide(self,sprites,enemies):
+        #Environment collision
         for s in sprites:
             if self.rect.colliderect(s):
                 if s.rect.collidepoint(self.rect.bottomright) and not s.rect.collidepoint(self.rect.bottomleft) and self.dx > 0 and not self.on_ground:
@@ -158,3 +196,20 @@ class Mario(pygame.sprite.Sprite):
                         self.image = pygame.image.load("data/mario1-left.png").convert_alpha()
                     elif self.face == "right":
                         self.image = pygame.image.load("data/mario1.png").convert_alpha()
+        #Enemy collision
+        for e in enemies:
+            if not e.dead: #For animation purposes, enemies aren't deleted until a few frames later
+                if self.rect.colliderect(e):
+                    if e.rect.collidepoint(self.rect.bottomright) and e.rect.collidepoint(self.rect.midbottom):
+                        self.jump_sound.stop()
+                        self.stomp_sound.play()
+                        e.dead = True
+                        self.dy = -2
+                    elif e.rect.collidepoint(self.rect.bottomleft) and e.rect.collidepoint(self.rect.midbottom):
+                        self.jump_sound.stop()
+                        self.stomp_sound.play()
+                        e.dead = True
+                        self.dy = -2
+                    else:
+                        self.dead = True
+                        self.dy = -6
