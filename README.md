@@ -4,4 +4,4 @@ This is a project for my Python Computer Science programming class. My goal was 
 systems of Mario. 
 It simulates the very bare bone basics like moving, squishing a goomba, gravity, collision, and falling to your death. Not the
 cleanest code I have ever wrote. Collision and squishing is about 95%. There are certain points where you might die instead of 
-squishing or collision might act weird. 
+squishing or collision might act weird.  Excuse the terrible commits. I sometimes work on too many things at once or I just forget to commit. 
