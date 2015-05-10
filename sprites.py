@@ -52,9 +52,9 @@ class Pipe(pygame.sprite.Sprite):
         self.rect.topleft = [self.x,self.y]
 class Goomba(pygame.sprite.Sprite):
     def __init__(self,x,y):
-        self.max_x = x + 48
+        self.max_x = x + 48 #For animation purposes, the minimum and maximum x values the Goomba goes. Not the best idea if I wanted Goomba to act like real mario game.
         self.min_x = x - 48
-        self.left = False
+        self.left = False #Direction the Goomba is moving
         self.image = pygame.image.load("data/slub1.png").convert_alpha()
         self.animate = ['data/slub1.png','data/slub2.png']
         self.rect = self.image.get_rect()
@@ -68,7 +68,7 @@ class Goomba(pygame.sprite.Sprite):
     def update(self):
         if self.dead:
             self.image = pygame.image.load('data/slub3.png').convert_alpha()
-            self.rect.y = self.rect.y - 8
+            self.rect.y = self.rect.y - 8 #Slub3 is 16x8 and not 16x16 so rect needs to be smaller
             self.squish_frame += 1
         else:
             self.frame += 1
@@ -89,8 +89,8 @@ class Goomba(pygame.sprite.Sprite):
 class Mario(pygame.sprite.Sprite):
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
-        self.dx = 0
-        self.dy = 0
+        self.dx = 0 #Distance moving X-axis
+        self.dy = 0 #Distance moving Y-Axis
         self.x = x
         self.y = y
         self.image = pygame.image.load("data/mario1.png").convert_alpha()
@@ -114,7 +114,7 @@ class Mario(pygame.sprite.Sprite):
         self.stomp_sound = pygame.mixer.Sound('data/sound/stomp.ogg')
         self.play_jump = False
     def update(self,screen,left,right,up,sprites,enemies):
-        if self.rect.top >= screen.get_height():
+        if self.rect.top >= screen.get_height(): #If you fall of bottom edge, Mario dies
             self.dead = True
             self.dy = -8
             return
@@ -155,15 +155,15 @@ class Mario(pygame.sprite.Sprite):
         if not (left or right):
             self.dx = 0
             self.frame = 0
-        if not self.jumping:
+        if not self.jumping: #Simulates gravity. Always falling unless Mario jumps or collides with something under him
             self.dy += self.gravity
             self.rect.y += self.dy
             self.collide(sprites,enemies)
-        if self.rect.left < 0:
+        if self.rect.left < 0: #Prevents going off screen to the left
             self.rect.left = 0
-        if self.rect.right > screen.get_width():
+        if self.rect.right > screen.get_width(): #Prevent going off screen to the right
             self.rect.right = screen.get_width()
-    def death(self):
+    def death(self): #Death animation calculations
         self.rect.y += self.dy
         self.dy += self.gravity/2
     def collide(self,sprites,enemies):
