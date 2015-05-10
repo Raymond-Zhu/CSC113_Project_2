@@ -125,7 +125,10 @@ class Mario(pygame.sprite.Sprite):
             self.rect.x += self.dx
             if self.frame == 16:
                 self.frame = 0
-            self.image = pygame.image.load(self.right_images[self.frame//4]).convert_alpha()
+            if not self.on_ground:
+                self.image = pygame.image.load("data/mario5.png").convert_alpha()
+            else:
+                self.image = pygame.image.load(self.right_images[self.frame//4]).convert_alpha()
             self.collide(sprites,enemies)
         if left:
             self.dx = -3
@@ -134,7 +137,10 @@ class Mario(pygame.sprite.Sprite):
             self.rect.x += self.dx
             if self.frame == 16:
                 self.frame = 0
-            self.image = pygame.image.load(self.left_images[self.frame//4]).convert_alpha()
+            if not self.on_ground:
+                self.image = pygame.image.load("data/mario5-left.png").convert_alpha()
+            else:
+                self.image = pygame.image.load(self.left_images[self.frame//4]).convert_alpha()
             self.collide(sprites,enemies)
         if up:
             if self.play_jump:
