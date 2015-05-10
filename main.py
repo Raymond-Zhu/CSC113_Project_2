@@ -18,7 +18,7 @@ play_die_music = True
 bg_music.play(-1)
 
 while True:
-    if level.mario.dead:
+    if level.mario.dead: #Deals with death animation and sounds. Also "freezes" the display except for mario so Goombas don't move.
         level.mario.image = pygame.image.load("data/mariodie.png").convert_alpha()
         if play_die_music:
             bg_music.stop()
@@ -34,7 +34,6 @@ while True:
                     pygame.quit()
                     sys.exit()
     else:
-        #Blits background according to screen size
         for event in pygame.event.get():
             if event.type == KEYDOWN and event.key == K_ESCAPE:
                 pygame.quit()

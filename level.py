@@ -4,9 +4,9 @@ from sprites import *
 
 class Level():
     def __init__(self):
-        self.level = []
+        self.level = [] #Storage for characters read from file
         self.tilemap = open("data/level","r")
-        self.world = []
+        self.world = [] #Stores all sprites in the game. Forgot what I was going to use this for. Don't think it's necessary.
         self.enemies = pygame.sprite.Group()
         self.collidable = pygame.sprite.Group()
         self.game_over = False
@@ -56,7 +56,7 @@ class Level():
             for enemy in self.enemies:
                 enemy.update()
                 surface.blit(enemy.image,enemy.rect.topleft)
-                if enemy.dead and enemy.squish_frame == 5:
+                if enemy.dead and enemy.squish_frame == 5: #Squish_frame is so that the goomba's squished image lasts for a bit longer duration, then it removes the Goomba
                     self.enemies.remove(enemy)
             for s in self.collidable:
                 surface.blit(s.image,s.rect.topleft)
