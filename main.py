@@ -64,6 +64,7 @@ while True:
                 level.mario.jumping = False
                 up = False
         level.mario.update(screen,left,right,up,level.collidable,level.enemies)
+        level.qblock.update(level.mario)
     for x in range(0,screen.get_width(),bg_rect.w):
         for y in range(0,screen.get_height(),bg_rect.h):
             screen.blit(bg,(x,y))

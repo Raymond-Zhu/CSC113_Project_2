@@ -10,6 +10,7 @@ class Level():
         self.enemies = pygame.sprite.Group()
         self.collidable = pygame.sprite.Group()
         self.game_over = False
+        self.qblock = pygame.sprite.Group() #Stores question mark blocks
         self.font = pygame.font.Font("data/font.ttf",24)
     def create(self,x,y):
         for tile in self.tilemap:
@@ -44,6 +45,9 @@ class Level():
                 if col == "M":
                     mario = Mario(x,y)
                     self.mario = mario
+                if col == "Q":
+                    qblock = CoinQBlock(x,y)
+                    self.qblock.add(qblock)
                 x += 16
             y += 16
             x = 0
@@ -61,6 +65,8 @@ class Level():
             for s in self.collidable:
                 surface.blit(s.image,s.rect.topleft)
             surface.blit(self.mario.image,self.mario.rect)
+            for q in self.qblock:
+                surface.blit(q.image,q.rect)
 
 
 

@@ -17,7 +17,6 @@ class Platform(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.rect = self.image.get_rect()
         self.rect.topleft = [self.x,self.y]
-        self.rect.h += 10
 class Cloud(pygame.sprite.Sprite):
     def __init__(self,x,y):
         self.image = pygame.image.load("data/cloud.png").convert_alpha()
@@ -85,6 +84,28 @@ class Goomba(pygame.sprite.Sprite):
                     self.rect.x = self.max_x
                     self.left = True
             self.image = pygame.image.load(self.animate[self.frame//5]).convert_alpha()
+class CoinQBlock(pygame.sprite.Sprite):
+    def __init__(self,x,y):
+        pygame.sprite.Sprite.__init__(self)
+        self.x = x
+        self.y = y
+        self.image = pygame.image.load("data/platform-q.png").convert_alpha()
+        self.animate = ["data/platform-q.png","data/platform-q1.png",
+                        "data/platform-q2.png","data/platform-q3.png"]
+        self.rect = self.image.get_rect()
+        self.rect.topleft = [self.x,self.y]
+        self.frame = 0
+        self.hit = False
+    def update(self,mario):
+        if not self.hit:
+            self.frame += 1
+            if self.frame >= 16:
+                self.frame = 0
+            self.image = pygame.image.load(self.animate[self.frame//4]).convert_alpha()
+        if self.rect.colliderect(mario.rect):
+            self.image = pygame.image.load("data/platform-air.png").convert_alpha()
+
+
 
 class Mario(pygame.sprite.Sprite):
     def __init__(self,x,y):
@@ -114,6 +135,7 @@ class Mario(pygame.sprite.Sprite):
         self.collide_sound = pygame.mixer.Sound('data/sound/jump2.ogg')
         self.stomp_sound = pygame.mixer.Sound('data/sound/stomp.ogg')
         self.play_jump = False
+        self.collided = False
     def update(self,screen,left,right,up,sprites,enemies):
         if self.rect.top >= screen.get_height(): #If you fall of bottom edge, Mario dies
             self.dead = True
@@ -207,6 +229,7 @@ class Mario(pygame.sprite.Sprite):
                         self.image = pygame.image.load("data/mario1-left.png").convert_alpha()
                     elif self.face == "right":
                         self.image = pygame.image.load("data/mario1.png").convert_alpha()
+                self.collided = True
         #Enemy collision
         for e in enemies:
             if not e.dead: #For animation purposes, enemies aren't deleted until a few frames later
