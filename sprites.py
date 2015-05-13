@@ -95,6 +95,7 @@ class CoinQBlock(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
+        self.dy = 0
         self.image = pygame.image.load("data/platform-q.png").convert_alpha()
         self.animate = ["data/platform-q.png","data/platform-q1.png",
                         "data/platform-q2.png","data/platform-q3.png"]
@@ -103,15 +104,24 @@ class CoinQBlock(pygame.sprite.Sprite):
         self.frame = 0
         self.hit = False
         self.name = "qblock"
+        self.up = True #Used for animating the block to be bumped upwards
     def update(self,mario):
         if not self.hit:
             self.frame += 1
             if self.frame >= 16:
                 self.frame = 0
             self.image = pygame.image.load(self.animate[self.frame//4]).convert_alpha()
-    def collide(self):
-         self.hit = True
-         self.image = pygame.image.load("data/platform-air.png").convert_alpha()
+        else:
+            if self.up:
+                self.dy -= .5
+            else:
+                self.dy += .5
+            if self.dy < -1:
+                self.up = False
+            self.rect.y += self.dy
+            if self.rect.y >= self.y:
+                self.rect.y = self.y
+            self.image = pygame.image.load("data/platform-air.png").convert_alpha()
 class Mario(pygame.sprite.Sprite):
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
@@ -227,7 +237,8 @@ class Mario(pygame.sprite.Sprite):
                     self.rect.top = s.rect.bottom
                     self.dy = 0
                     if s.name == "qblock":
-                        s.collide()
+                        s.hit = True
+                        s.frame = 0
                 elif self.dy > 0:
                     self.on_ground = True
                     self.rect.bottom = s.rect.top
