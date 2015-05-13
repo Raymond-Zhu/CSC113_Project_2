@@ -48,6 +48,7 @@ class Level():
                 if col == "Q":
                     qblock = CoinQBlock(x,y)
                     self.qblock.add(qblock)
+                    self.collidable.add(qblock)
                 x += 16
             y += 16
             x = 0

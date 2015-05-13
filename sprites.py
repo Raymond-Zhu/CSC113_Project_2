@@ -9,6 +9,7 @@ class Brick(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.rect = self.image.get_rect()
         self.rect.topleft = [self.x,self.y]
+        self.name = "brick"
 class Platform(pygame.sprite.Sprite):
     def __init__(self,x,y):
         self.image = pygame.image.load("data/platform-top.png").convert_alpha()
@@ -17,6 +18,7 @@ class Platform(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.rect = self.image.get_rect()
         self.rect.topleft = [self.x,self.y]
+        self.name = "platform"
 class Cloud(pygame.sprite.Sprite):
     def __init__(self,x,y):
         self.image = pygame.image.load("data/cloud.png").convert_alpha()
@@ -25,6 +27,7 @@ class Cloud(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.rect = self.image.get_rect()
         self.rect.topleft = [self.x,self.y]
+        self.name = "cloud"
 class Bush(pygame.sprite.Sprite):
     def __init__(self,x,y):
         self.image = pygame.image.load("data/bush-3.png").convert_alpha()
@@ -33,6 +36,7 @@ class Bush(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.rect = self.image.get_rect()
         self.rect.topleft = [self.x,self.y]
+        self.name = "bush"
 class DobbelCloud(pygame.sprite.Sprite):
     def __init__(self,x,y):
         self.image = pygame.image.load("data/dobbelclouds.png").convert_alpha()
@@ -41,6 +45,7 @@ class DobbelCloud(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.rect = self.image.get_rect()
         self.rect.topleft = [self.x,self.y]
+        self.name = 'dobbelcloud'
 class Pipe(pygame.sprite.Sprite):
     def __init__(self,x,y):
         self.image = pygame.image.load("data/pipe_green.png").convert_alpha()
@@ -49,6 +54,7 @@ class Pipe(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.rect = self.image.get_rect()
         self.rect.topleft = [self.x,self.y]
+        self.name = "pipe"
 class Goomba(pygame.sprite.Sprite):
     def __init__(self,x,y):
         self.max_x = x + 48 #For animation purposes, the minimum and maximum x values the Goomba goes. Not the best idea if I wanted Goomba to act like real mario game.
@@ -96,17 +102,16 @@ class CoinQBlock(pygame.sprite.Sprite):
         self.rect.topleft = [self.x,self.y]
         self.frame = 0
         self.hit = False
+        self.name = "qblock"
     def update(self,mario):
         if not self.hit:
             self.frame += 1
             if self.frame >= 16:
                 self.frame = 0
             self.image = pygame.image.load(self.animate[self.frame//4]).convert_alpha()
-        if self.rect.colliderect(mario.rect):
-            self.image = pygame.image.load("data/platform-air.png").convert_alpha()
-
-
-
+    def collide(self):
+         self.hit = True
+         self.image = pygame.image.load("data/platform-air.png").convert_alpha()
 class Mario(pygame.sprite.Sprite):
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
@@ -221,6 +226,8 @@ class Mario(pygame.sprite.Sprite):
                     self.collide_sound.play()
                     self.rect.top = s.rect.bottom
                     self.dy = 0
+                    if s.name == "qblock":
+                        s.collide()
                 elif self.dy > 0:
                     self.on_ground = True
                     self.rect.bottom = s.rect.top
