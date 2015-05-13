@@ -105,7 +105,8 @@ class Mario(pygame.sprite.Sprite):
         self.frame = 0
         self.on_ground = True
         self.jumping = False
-        self.jump_speed = -8
+        self.velocity = .2
+        self.jump_speed = -7.5
         self.gravity = .48
         self.face = "right"
         self.dead = False
@@ -119,7 +120,9 @@ class Mario(pygame.sprite.Sprite):
             self.dy = -8
             return
         if right :
-            self.dx = 3
+            self.dx += self.velocity
+            if self.dx > 4:
+                self.dx = 4
             self.face = "right"
             self.frame += 1
             self.rect.x += self.dx
@@ -131,7 +134,9 @@ class Mario(pygame.sprite.Sprite):
                 self.image = pygame.image.load(self.right_images[self.frame//4]).convert_alpha()
             self.collide(sprites,enemies)
         if left:
-            self.dx = -3
+            self.dx -= self.velocity
+            if self.dx < -4:
+                self.dx = -4
             self.face = "left"
             self.frame += 1
             self.rect.x += self.dx

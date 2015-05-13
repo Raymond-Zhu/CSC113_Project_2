@@ -40,8 +40,10 @@ while True:
                 sys.exit()
             if event.type == KEYDOWN and event.key == K_RIGHT:
                 right = True
+                level.mario.dx = level.mario.velocity
             if event.type == KEYDOWN and event.key == K_LEFT:
                 left = True
+                level.mario.dx = -level.mario.velocity
             if event.type == KEYDOWN and event.key == K_UP:
                 if level.mario.on_ground:
                     up = True
