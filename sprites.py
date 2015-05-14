@@ -112,6 +112,8 @@ class CoinQBlock(pygame.sprite.Sprite):
                 self.frame = 0
             self.image = pygame.image.load(self.animate[self.frame//4]).convert_alpha()
         else:
+            self.collide()
+    def collide(self):
             if self.up:
                 self.dy -= .5
             else:
