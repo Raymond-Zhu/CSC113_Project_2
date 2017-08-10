@@ -1,4 +1,4 @@
-# CSC113 Project 2
+# CSC113 Project 2(PyMario)
 
 This is a project for my Python Computer Science programming class. My goal was to use the pygame package(First time using pygame) to simulate the basic
 systems of Mario. 
